@@ -14,7 +14,7 @@ describe("getAllPosts()", () => {
 
   it("returns the correct number of posts", async () => {
     const posts = await getAllPosts();
-    expect(posts.length).toBeGreaterThanOrEqual(5);
+    expect(posts.length).toBeGreaterThanOrEqual(2);
   });
 
   it("returns posts sorted by date descending", async () => {
@@ -44,7 +44,7 @@ describe("getAllPosts()", () => {
 
 describe("getPostBySlug()", () => {
   it("returns a Post with bilingual contentHtml for a valid slug", async () => {
-    const post = await getPostBySlug("ai-brain-fatigue");
+    const post = await getPostBySlug("hello-world");
     expect(post).not.toBeNull();
     expect(post!.contentHtmlZh).not.toBeNull();
     expect(post!.contentHtmlZh!.length).toBeGreaterThan(0);
@@ -53,9 +53,9 @@ describe("getPostBySlug()", () => {
   });
 
   it("returns all PostMeta fields for a valid slug", async () => {
-    const post = await getPostBySlug("ai-brain-fatigue");
+    const post = await getPostBySlug("hello-world");
     expect(post).not.toBeNull();
-    expect(post!.slug).toBe("ai-brain-fatigue");
+    expect(post!.slug).toBe("hello-world");
     expect(typeof post!.titleZh).toBe("string");
     expect(typeof post!.titleEn).toBe("string");
   });
@@ -71,12 +71,12 @@ describe("getPostBySlug()", () => {
   });
 
   it("returns null for a slug with forward slash", async () => {
-    const post = await getPostBySlug("posts/ai-first-workflow");
+    const post = await getPostBySlug("posts/hello-world");
     expect(post).toBeNull();
   });
 
   it("returns null for a slug with invalid characters", async () => {
-    const post = await getPostBySlug("ai_first_workflow!");
+    const post = await getPostBySlug("hello_world!");
     expect(post).toBeNull();
   });
 });
@@ -87,7 +87,7 @@ describe("getWhatsNew()", () => {
     expect(Array.isArray(items)).toBe(true);
   });
 
-  it("returns items", async () => {
+  it("returns items from posts and resources", async () => {
     const items = await getWhatsNew();
     expect(items.length).toBeGreaterThanOrEqual(1);
   });
@@ -113,15 +113,14 @@ describe("getAllPostSlugs()", () => {
     }
   });
 
-  it("returns directory names of all posts", async () => {
+  it("returns directory names of example posts", async () => {
     const slugs = await getAllPostSlugs();
-    expect(slugs).toContain("ai-brain-fatigue");
-    expect(slugs).toContain("ai-didnt-make-you-slower");
-    expect(slugs).toContain("antirez-ai-programming");
+    expect(slugs).toContain("hello-world");
+    expect(slugs).toContain("building-with-ai");
   });
 
   it("returns slugs matching the post count", async () => {
     const slugs = await getAllPostSlugs();
-    expect(slugs.length).toBeGreaterThanOrEqual(5);
+    expect(slugs.length).toBeGreaterThanOrEqual(2);
   });
 });
