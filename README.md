@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# az-site
 
-## Getting Started
+> AI-native personal website. Blog, resources, AI chat — all in one.
 
-First, run the development server:
+## Quick Start (5 minutes)
 
 ```bash
+git clone https://github.com/arthurzhuhan/az-site.git
+cd az-site
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then run `/az-site` in your AI coding tool (Claude Code or OpenClaw) to configure your site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Blog** — Bilingual Markdown blog with tags, images, and SEO
+- **AI Chat** — Chat with your own AI persona (multi-provider support)
+- **Resources** — Showcase tools, projects, and learning materials
+- **Dark/Light Theme** — Toggle with system preference support
+- **i18n** — English and Chinese with language toggle
+- **Text-to-Speech** — Browser native (zero-config) or third-party
+- **SEO** — OpenGraph, JSON-LD, sitemap, robots.txt
+- **Newsletter** — Email subscription with built-in API
 
-## Learn More
+## Configuration
 
-To learn more about Next.js, take a look at the following resources:
+| File | Purpose |
+|------|---------|
+| `site.config.ts` | Identity, social links, feature toggles, i18n |
+| `persona.config.ts` | AI personality, greeting, quick replies, LLM provider |
+| `.env` | API keys and secrets (see `.env.example`) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supported AI Providers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Provider | SDK | Notes |
+|----------|-----|-------|
+| OpenAI | `openai` | Also covers DeepSeek, Groq, Ollama, Ark via `OPENAI_BASE_URL` |
+| Anthropic | `@anthropic-ai/sdk` | Claude models |
+| Google | `@google/generative-ai` | Gemini models |
 
-## Deploy on Vercel
+## Setup Skill
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The `/az-site` skill guides you through configuration in ~5 minutes:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Tool | Installation | Command |
+|------|-------------|---------|
+| Claude Code | Auto-discovered from `skill/claude/` | `/az-site` |
+| OpenClaw | Copy `skill/openclaw/` to workspace skills | `/az-site` |
+| Other | Paste `skill/setup-instructions.md` into chat | Manual |
+
+See [skill/INSTALL.md](skill/INSTALL.md) for detailed instructions.
+
+## Content
+
+**Blog posts:** `content/posts/<slug>/index.{en,zh}.md`
+
+**Resources:** `content/resources/<slug>/index.{en,zh}.md`
+
+**Announcements:** `content/whats-new.json`
+
+Each content file uses YAML frontmatter for metadata (title, excerpt, tags, date, image).
+
+## Deployment
+
+- **Vercel** (recommended) — Connect your repo for automatic deploys
+- **Netlify** — Standard Next.js deployment
+- **Docker** — `npm run build && npm start`
+- **Self-hosted** — Any Node.js 18+ environment
+
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org) + [React 19](https://react.dev)
+- [Tailwind CSS 4](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com)
+- [OpenAI SDK](https://github.com/openai/openai-node) / [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-typescript) / [Google AI SDK](https://github.com/google/generative-ai-js)
+- [Vitest](https://vitest.dev) for testing
+
+## Development
+
+```bash
+npm run dev       # Start dev server
+npm run build     # Production build
+npm run test      # Run tests
+npm run lint      # Lint code
+```
+
+## License
+
+MIT
