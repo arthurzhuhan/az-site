@@ -20,7 +20,8 @@ export class GoogleProvider implements LLMProvider {
   ): AsyncIterable<StreamChunk> {
     const modelName = process.env.GOOGLE_MODEL || 'gemini-2.0-flash'
 
-    const tools = options?.tools?.map((t) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tools = options?.tools?.map((t): any => ({
       functionDeclarations: [
         {
           name: t.name,
@@ -33,7 +34,7 @@ export class GoogleProvider implements LLMProvider {
     const model = this.genAI.getGenerativeModel({
       model: modelName,
       systemInstruction: systemPrompt,
-      tools: tools || undefined,
+      tools: tools as any || undefined,
     })
 
     const geminiHistory = messages.slice(0, -1).map((m) => ({

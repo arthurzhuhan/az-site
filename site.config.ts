@@ -26,8 +26,8 @@ export const siteConfig = {
 
   // Internationalization
   i18n: {
-    defaultLang: "en" as const,
-    supported: ["en", "zh"] as const,
+    defaultLang: "en" as "en" | "zh",
+    supported: ["en", "zh"] as readonly string[],
   },
 }
 

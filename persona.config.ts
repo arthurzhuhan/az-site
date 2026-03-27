@@ -1,7 +1,7 @@
 export const personaConfig = {
   // LLM provider: "openai" | "anthropic" | "google"
   // "openai" also covers DeepSeek, Groq, Ollama, Ark via OPENAI_BASE_URL
-  provider: "openai" as const,
+  provider: "openai" as "openai" | "anthropic" | "google",
 
   // System prompt ({name} auto-replaced with siteConfig.name)
   system: {

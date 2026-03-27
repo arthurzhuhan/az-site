@@ -53,10 +53,12 @@ export class OpenAIProvider implements LLMProvider {
       const choice = response.choices[0]
       if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
         for (const tc of choice.message.tool_calls) {
-          yield {
-            type: 'tool_call',
-            name: tc.function.name,
-            args: JSON.parse(tc.function.arguments),
+          if (tc.type === 'function') {
+            yield {
+              type: 'tool_call',
+              name: (tc as any).function.name,
+              args: JSON.parse((tc as any).function.arguments),
+            }
           }
         }
         return
