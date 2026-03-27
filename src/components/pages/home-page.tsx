@@ -15,31 +15,22 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { PostMeta, WhatsNewItem, ResourceMeta } from "@/lib/content";
+import { siteConfig } from "../../../site.config";
+import { personaConfig } from "../../../persona.config";
+import { resolveTemplate } from "@/lib/config";
 
 type Lang = "zh" | "en";
 const LANG_KEY = "preferred-lang";
 
-const quickReplies = {
-  zh: [
-    "分享最新的AI技术变革",
-    "我有一个想法，帮我分析一下",
-    "聊聊你最近在做什么项目？",
-  ],
-  en: [
-    "Share the latest AI tech breakthroughs",
-    "I have an idea, help me analyze it",
-    "What projects are you working on?",
-  ],
-};
+const quickReplies = personaConfig.quickReplies;
 
 // 双语内容
 const translations = {
   zh: {
     hero: {
-      name: "Arthur Zhu",
-      title: "Builder · 写作者 · AI创业者",
-      greeting:
-        "哈喽 👋 我是 Arthur，欢迎来到我的个人空间！无论是技术探讨、项目合作、还是闲聊交流，都可以随时找我。现在开始我们的第一个话题吧：",
+      name: siteConfig.name,
+      title: siteConfig.title,
+      greeting: resolveTemplate(personaConfig.greeting.zh),
     },
     whatsNew: "最新动态",
     blog: "Blog",
@@ -62,15 +53,14 @@ const translations = {
       already: "你已经订阅过了 :)",
     },
     footer: {
-      copyright: "© 2026 Arthur Zhu. All rights reserved.",
+      copyright: `© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.`,
     },
   },
   en: {
     hero: {
-      name: "Arthur Zhu",
-      title: "Builder · Writer · AI Entrepreneur",
-      greeting:
-        "Hey 👋 I'm Arthur, welcome to my space! Whether it's tech discussions, project collaborations, or casual chats — feel free to reach out. Let's start our first topic:",
+      name: siteConfig.name,
+      title: siteConfig.title,
+      greeting: resolveTemplate(personaConfig.greeting.en),
     },
     whatsNew: "What's New",
     blog: "Blog",
@@ -94,7 +84,7 @@ const translations = {
       already: "You're already subscribed :)",
     },
     footer: {
-      copyright: "© 2026 Arthur Zhu. All rights reserved.",
+      copyright: `© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.`,
     },
   },
 };
@@ -459,7 +449,7 @@ export function HomePage({ posts, whatsNew, resources }: HomePageProps) {
           aria-label="Open Chat"
         >
           <Avatar className="h-14 w-14">
-            <AvatarImage src="/avatar.jpg" alt="Arthur Zhu" />
+            <AvatarImage src="/avatar.jpg" alt="Avatar" />
             <AvatarFallback className="text-sm">AZ</AvatarFallback>
           </Avatar>
         </Link>

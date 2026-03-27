@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Starfield } from "@/components/ui/starfield";
 import { GradientBlobs } from "@/components/ui/gradient-blobs";
+import { siteConfig } from "../../site.config";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -25,38 +26,35 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ziut.cn"),
+  metadataBase: new URL(siteConfig.domain),
   title: {
-    default: "Arthur Zhu - Builder · Writer · AI Entrepreneur",
-    template: "%s | Arthur Zhu",
+    default: `${siteConfig.name} - ${siteConfig.title}`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Arthur Zhu 的个人空间 — AI 创业者、技术写作者。分享 AI、编程、创业相关的思考与实践。Personal space of Arthur Zhu — AI entrepreneur & tech writer.",
-  keywords: ["Arthur Zhu", "AI", "编程", "创业", "技术博客", "Programming", "Startup"],
-  authors: [{ name: "Arthur Zhu", url: "https://ziut.cn" }],
-  creator: "Arthur Zhu",
+  description: `${siteConfig.name} — ${siteConfig.title}`,
+  keywords: [siteConfig.name],
+  authors: [{ name: siteConfig.name, url: siteConfig.domain }],
+  creator: siteConfig.name,
   openGraph: {
     type: "website",
-    locale: "zh_CN",
-    alternateLocale: "en_US",
-    url: "https://ziut.cn",
-    siteName: "Arthur Zhu",
-    title: "Arthur Zhu - Builder · Writer · AI Entrepreneur",
-    description:
-      "AI 创业者、技术写作者。分享 AI、编程、创业相关的思考与实践。",
-    images: [{ url: "/avatar.jpg", width: 400, height: 400, alt: "Arthur Zhu" }],
+    locale: siteConfig.i18n.defaultLang === "zh" ? "zh_CN" : "en_US",
+    alternateLocale: siteConfig.i18n.defaultLang === "zh" ? "en_US" : "zh_CN",
+    url: siteConfig.domain,
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} - ${siteConfig.title}`,
+    description: `${siteConfig.name} — ${siteConfig.title}`,
+    images: [{ url: "/avatar.jpg", width: 400, height: 400, alt: siteConfig.name }],
   },
   twitter: {
     card: "summary",
-    site: "@Arthur__Ju",
-    creator: "@Arthur__Ju",
-    title: "Arthur Zhu - Builder · Writer · AI Entrepreneur",
-    description:
-      "AI 创业者、技术写作者。分享 AI、编程、创业相关的思考与实践。",
+    site: siteConfig.social.x || undefined,
+    creator: siteConfig.social.x || undefined,
+    title: `${siteConfig.name} - ${siteConfig.title}`,
+    description: `${siteConfig.name} — ${siteConfig.title}`,
     images: ["/avatar.jpg"],
   },
   alternates: {
-    canonical: "https://ziut.cn",
+    canonical: siteConfig.domain,
   },
   robots: {
     index: true,
@@ -71,7 +69,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="zh-CN"
+      lang={siteConfig.i18n.defaultLang === "zh" ? "zh-CN" : "en"}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >

@@ -1,3 +1,4 @@
+import { siteConfig } from "../../../../../site.config";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/content";
 import { BlogPostPage } from "@/components/pages/blog-post-page";
 import { BlogPostJsonLd } from "@/components/seo/json-ld";
@@ -25,7 +26,7 @@ export async function generateMetadata({
       description: post.excerptZh,
       type: "article",
       publishedTime: post.date,
-      authors: ["Arthur Zhu"],
+      authors: [siteConfig.name],
       images: post.image ? [{ url: post.image, alt: post.titleZh }] : [],
     },
     twitter: {

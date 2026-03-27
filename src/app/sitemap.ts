@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getAllPostSlugs, getAllResourceSlugs } from "@/lib/content";
+import { siteConfig } from "../../site.config";
 
-const BASE_URL = "https://ziut.cn";
+const BASE_URL = siteConfig.domain;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const postSlugs = await getAllPostSlugs();

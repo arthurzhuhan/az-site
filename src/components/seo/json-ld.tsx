@@ -1,18 +1,13 @@
 import type { PostMeta, ResourceMeta } from "@/lib/content";
+import { siteConfig } from "../../../site.config";
 
-const BASE_URL = "https://ziut.cn";
+const BASE_URL = siteConfig.domain;
 
 const PERSON = {
   "@type": "Person",
-  name: "Arthur Zhu",
+  name: siteConfig.name,
   url: BASE_URL,
-  jobTitle: "AI Entrepreneur",
-  knowsAbout: ["AI", "Programming", "Startup", "Web Development"],
-  sameAs: [
-    "https://github.com/arthurzhuhan",
-    "https://x.com/Arthur__Ju",
-    "https://www.tiktok.com/@arthurzhuhan",
-  ],
+  sameAs: Object.values(siteConfig.social).filter(Boolean),
 };
 
 export function WebsiteJsonLd() {
@@ -22,9 +17,8 @@ export function WebsiteJsonLd() {
       {
         "@type": "WebSite",
         url: BASE_URL,
-        name: "Arthur Zhu",
-        description:
-          "Arthur Zhu 的个人空间 — AI 创业者、技术写作者",
+        name: siteConfig.name,
+        description: `${siteConfig.name} — ${siteConfig.title}`,
         author: PERSON,
       },
       { ...PERSON, "@context": undefined },

@@ -7,25 +7,16 @@ import { Send, Copy, Check, Volume2, VolumeX } from "lucide-react";
 import { marked } from "marked";
 import { ExternalLink } from "lucide-react";
 import type { ChatMessage, Reference, Lang } from "@/lib/chat/types";
+import { personaConfig } from "../../../persona.config";
+import { resolveTemplate } from "@/lib/config";
 
 const LANG_KEY = "preferred-lang";
 
-const quickReplies = {
-  zh: [
-    "分享最新的AI技术变革",
-    "我有一个想法，帮我分析一下",
-    "聊聊你最近在做什么项目？",
-  ],
-  en: [
-    "Share the latest AI tech breakthroughs",
-    "I have an idea, help me analyze it",
-    "What projects are you working on?",
-  ],
-};
+const quickReplies = personaConfig.quickReplies;
 
 const greeting = {
-  zh: "哈喽 👋 我是 Arthur，欢迎来到我的个人空间！无论是技术探讨、项目合作、还是闲聊交流，都可以随时找我。现在开始我们的第一个话题吧：",
-  en: "Hey 👋 I'm Arthur, welcome to my space! Whether it's tech discussions, project collaborations, or casual chats — feel free to reach out. Let's start our first topic:",
+  zh: resolveTemplate(personaConfig.greeting.zh),
+  en: resolveTemplate(personaConfig.greeting.en),
 };
 
 const placeholder = {
@@ -387,7 +378,7 @@ export function ChatPage({ onClose }: ChatPageProps) {
           {/* AI greeting bubble */}
           <div className="flex items-start gap-3">
             <Avatar className="h-8 w-8 flex-shrink-0">
-              <AvatarImage src="/avatar.jpg" alt="Arthur Zhu" />
+              <AvatarImage src="/avatar.jpg" alt="Avatar" />
               <AvatarFallback className="text-xs">AZ</AvatarFallback>
             </Avatar>
             <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-primary/10 px-4 py-3 text-[15px] leading-relaxed text-foreground/90">
@@ -422,7 +413,7 @@ export function ChatPage({ onClose }: ChatPageProps) {
               <div key={idx} className="mt-4">
                 <div className="flex items-start gap-3">
                   <Avatar className="h-8 w-8 flex-shrink-0">
-                    <AvatarImage src="/avatar.jpg" alt="Arthur Zhu" />
+                    <AvatarImage src="/avatar.jpg" alt="Avatar" />
                     <AvatarFallback className="text-xs">AZ</AvatarFallback>
                   </Avatar>
                   <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-primary/10 px-4 py-3 text-[15px] leading-relaxed text-foreground/90">
@@ -458,7 +449,7 @@ export function ChatPage({ onClose }: ChatPageProps) {
             messages[messages.length - 1].role === "user" && (
               <div className="mt-4 flex items-start gap-3">
                 <Avatar className="h-8 w-8 flex-shrink-0">
-                  <AvatarImage src="/avatar.jpg" alt="Arthur Zhu" />
+                  <AvatarImage src="/avatar.jpg" alt="Avatar" />
                   <AvatarFallback className="text-xs">AZ</AvatarFallback>
                 </Avatar>
                 <div className="rounded-2xl rounded-tl-sm bg-primary/10 px-4 py-3">

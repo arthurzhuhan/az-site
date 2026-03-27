@@ -18,8 +18,12 @@ import {
   Github,
   Mail,
   BookOpen,
+  Linkedin,
+  Youtube,
+  Globe,
 } from "lucide-react";
 import { XIcon, TikTokIcon } from "@/components/ui/social-icons";
+import { siteConfig } from "../../../site.config";
 
 type Lang = "zh" | "en";
 const LANG_KEY = "preferred-lang";
@@ -47,38 +51,31 @@ const navItems: NavItem[] = [
   { icon: MessageSquare, labelZh: "问我", labelEn: "AMA", href: "/chat" },
 ];
 
-const socialItems: SocialItem[] = [
-  {
-    icon: Github,
-    labelZh: "GitHub",
-    labelEn: "GitHub",
-    href: "https://github.com/arthurzhuhan",
-  },
-  {
-    icon: XIcon,
-    labelZh: "X",
-    labelEn: "X",
-    href: "https://x.com/Arthur__Ju",
-  },
-  {
-    icon: BookOpen,
-    labelZh: "小红书",
-    labelEn: "RedNote",
-    href: "https://www.xiaohongshu.com/user/profile/69c07aab0000000033024aca?xsec_token=ABtqOb3av_zNUimhQ1OWk88agrGXdL0xbVLJdNbHIotdI=&xsec_source=pc_search&tab=note&subTab=note",
-  },
-  {
-    icon: TikTokIcon,
-    labelZh: "TikTok",
-    labelEn: "TikTok",
-    href: "https://www.tiktok.com/@arthurzhuhan",
-  },
-  {
-    icon: Mail,
-    labelZh: "邮箱",
-    labelEn: "Email",
-    href: "mailto:arthur_zhu@insbean.com",
-  },
-];
+const SOCIAL_ICON_MAP: Record<string, { icon: IconComponent; labelZh: string; labelEn: string; urlPrefix?: string }> = {
+  github: { icon: Github, labelZh: "GitHub", labelEn: "GitHub", urlPrefix: "https://github.com/" },
+  x: { icon: XIcon, labelZh: "X", labelEn: "X", urlPrefix: "https://x.com/" },
+  linkedin: { icon: Linkedin, labelZh: "LinkedIn", labelEn: "LinkedIn", urlPrefix: "https://linkedin.com/in/" },
+  email: { icon: Mail, labelZh: "邮箱", labelEn: "Email", urlPrefix: "mailto:" },
+  rednote: { icon: BookOpen, labelZh: "小红书", labelEn: "RedNote" },
+  tiktok: { icon: TikTokIcon, labelZh: "TikTok", labelEn: "TikTok", urlPrefix: "https://tiktok.com/@" },
+  youtube: { icon: Youtube, labelZh: "YouTube", labelEn: "YouTube", urlPrefix: "https://youtube.com/@" },
+};
+
+function buildSocialItems(): SocialItem[] {
+  return Object.entries(siteConfig.social)
+    .filter(([, value]) => value.length > 0)
+    .map(([platform, value]) => {
+      const meta = SOCIAL_ICON_MAP[platform] || { icon: Globe, labelZh: platform, labelEn: platform };
+      const href = value.startsWith("http") || value.startsWith("mailto:")
+        ? value
+        : meta.urlPrefix
+          ? `${meta.urlPrefix}${value}`
+          : value;
+      return { icon: meta.icon, labelZh: meta.labelZh, labelEn: meta.labelEn, href };
+    });
+}
+
+const socialItems: SocialItem[] = buildSocialItems();
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(true);
@@ -146,11 +143,11 @@ export function Sidebar() {
             <>
               <div className="flex min-w-0 items-center gap-2">
                 <Avatar className="h-8 w-8 flex-shrink-0">
-                  <AvatarImage src="/avatar.jpg" alt="Arthur Zhu" />
-                  <AvatarFallback className="text-xs">AZ</AvatarFallback>
+                  <AvatarImage src={siteConfig.avatar} alt={siteConfig.name} />
+                  <AvatarFallback className="text-xs">{siteConfig.name.split(" ").map(w => w[0]).join("").slice(0, 2)}</AvatarFallback>
                 </Avatar>
                 <span className="whitespace-nowrap font-semibold text-sidebar-foreground">
-                  Arthur Zhu
+                  {siteConfig.name}
                 </span>
               </div>
               <Button
