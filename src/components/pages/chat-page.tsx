@@ -160,26 +160,41 @@ function AssistantActions({
 
     setLoading(true);
     try {
+      // Try third-party TTS first, fall back to browser Web Speech API
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: plainText }),
       });
 
-      if (!res.ok) {
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        ttsCache.set(plainText, url);
         setLoading(false);
+        playAudio(url);
         return;
       }
 
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      ttsCache.set(plainText, url);
+      // Fall back to browser native Web Speech API
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(plainText);
+        utterance.lang = lang === "zh" ? "zh-CN" : "en-US";
+        utterance.rate = 1.0;
+        utterance.onend = () => setSpeaking(false);
+        utterance.onerror = () => setSpeaking(false);
+        setLoading(false);
+        setSpeaking(true);
+        speechSynthesis.speak(utterance);
+        return;
+      }
+
       setLoading(false);
-      playAudio(url);
     } catch {
       setLoading(false);
     }
-  }, [content, speaking, playAudio]);
+  }, [content, speaking, playAudio, lang]);
 
   return (
     <div className="ml-11 mt-1.5 flex items-center gap-2">

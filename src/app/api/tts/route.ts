@@ -1,9 +1,17 @@
 import { NextRequest } from "next/server";
 
-const TTS_URL = "https://openspeech.bytedance.com/api/v3/tts/unidirectional";
 const MAX_TEXT_LENGTH = 5000;
 
 export async function POST(request: NextRequest) {
+  const provider = process.env.TTS_PROVIDER;
+
+  if (!provider) {
+    return new Response(
+      JSON.stringify({ error: "TTS not configured. Using browser native." }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   const { text } = (await request.json()) as { text?: string };
 
   if (!text || typeof text !== "string" || text.length === 0) {
@@ -15,76 +23,44 @@ export async function POST(request: NextRequest) {
 
   if (text.length > MAX_TEXT_LENGTH) {
     return new Response(
-      JSON.stringify({ error: `Text too long (max ${MAX_TEXT_LENGTH} chars)` }),
+      JSON.stringify({
+        error: `Text too long (max ${MAX_TEXT_LENGTH} chars)`,
+      }),
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
-  const appId = process.env.TTS_APP_ID ?? "";
-  const accessToken = process.env.TTS_ACCESS_TOKEN ?? "";
-  const voice = process.env.TTS_VOICE ?? "zh_male_shenyeboke_emo_v2_mars_bigtts";
-
   try {
-    const response = await fetch(TTS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-App-Key": appId,
-        "X-Api-Access-Key": accessToken,
-        "X-Api-Resource-Id": "seed-tts-1.0",
-      },
-      body: JSON.stringify({
-        user: { uid: "web-chat" },
-        req_params: {
-          text,
-          speaker: voice,
-          audio_params: {
-            format: "mp3",
-            sample_rate: 24000,
-            bit_rate: 128000,
-          },
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      return new Response(
-        JSON.stringify({ error: "TTS service unavailable" }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
-      );
+    if (provider === "openai") {
+      return await handleOpenAITTS(text);
     }
 
-    // Response is chunked: multiple JSON lines, each may contain base64 audio in `data`
-    const body = await response.text();
-    const lines = body.trim().split("\n");
-    const audioChunks: Buffer[] = [];
-
-    for (const line of lines) {
-      const chunk = JSON.parse(line) as { code: number; message: string; data?: string };
-      if (chunk.data) {
-        audioChunks.push(Buffer.from(chunk.data, "base64"));
-      }
-      // code 20000000 = final "OK" chunk, code 0 = data chunk
-      if (chunk.code !== 0 && chunk.code !== 20000000) {
-        return new Response(
-          JSON.stringify({ error: chunk.message || "TTS failed" }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
-        );
-      }
-    }
-
-    const audioBuffer = Buffer.concat(audioChunks);
-
-    return new Response(audioBuffer, {
-      headers: {
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "no-cache",
-      },
-    });
+    return new Response(
+      JSON.stringify({ error: `Unknown TTS provider: ${provider}` }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   } catch {
     return new Response(
       JSON.stringify({ error: "Failed to connect to TTS service" }),
       { status: 502, headers: { "Content-Type": "application/json" } }
     );
   }
+}
+
+async function handleOpenAITTS(text: string): Promise<Response> {
+  const { default: OpenAI } = await import("openai");
+  const client = new OpenAI({
+    apiKey: process.env.TTS_API_KEY || process.env.OPENAI_API_KEY || "not-configured",
+  });
+
+  const mp3 = await client.audio.speech.create({
+    model: "tts-1",
+    voice: "alloy",
+    input: text,
+  });
+
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  return new Response(buffer, {
+    headers: { "Content-Type": "audio/mpeg" },
+  });
 }
