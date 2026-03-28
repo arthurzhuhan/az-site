@@ -111,6 +111,19 @@ Leave `TTS_PROVIDER` empty to use browser native Web Speech API (free, zero-conf
 
 Set `TTS_PROVIDER=openai` and `TTS_API_KEY` to use OpenAI's TTS API for higher quality voices.
 
+### Content API & Rebuild
+
+Set `CONTENT_API_KEY` to a secure random string. This protects the content management and rebuild endpoints:
+
+- `POST /api/content/posts` — Create/update blog posts
+- `POST /api/content/resources` — Create/update resources
+- `PUT /api/content/whats-new` — Update announcements
+- `POST /api/rebuild` — Trigger site rebuild (SSG re-generation)
+
+The rebuild endpoint has a 60-second cooldown to prevent abuse. It runs asynchronously and returns `202` immediately.
+
+For self-hosted deployments, set `REBUILD_CMD` to customize the build command (e.g., `"npx next build && pm2 restart my-site"`). Default is `"npx next build"`.
+
 ### Analytics (Optional)
 
 Set `NEXT_PUBLIC_GA_ID` to your Google Analytics measurement ID.
